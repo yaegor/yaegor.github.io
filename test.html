@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Google Sign-in Test</title>
+</head>
+<body>
+<script>
+  var client_id = '308537640474-bcd8o5kdsjkd1ajadskcvi6falj97rkn.apps.googleusercontent.com'
+  var hosted_domain = 'jetbrains.com'
+</script>
+<table>
+    <tr>
+        <td style="border: 1px solid black">
+            <a href="https://developers.google.com/identity/sign-in/web/reference">"Old" Google Sign-In JavaScript Platform Library for
+                web</a>
+            <p/>
+            <div id="button1"></div>
+            <div id="account1"></div>
+            <a id="signOut1" href="#" onclick="signOut1(); return false;">Sign out</a>
+            <div id="errorMessage1" style="color: red"></div>
+
+            <script>
+              function onSignIn1(googleUser) {
+                document.getElementById('account1').innerText = googleUser.getBasicProfile().getEmail()
+              }
+
+              function onGoogleInitError1(error) {
+                document.getElementById('errorMessage1').innerText = JSON.stringify(error)
+              }
+
+              function initGoogleSignIn1() {
+                // see https://developers.google.com/identity/sign-in/web/sign-in
+                gapi.load('auth2', function () {
+                  let opts = {
+                    client_id: client_id,
+                    hosted_domain: hosted_domain,
+                  }
+                  gapi.auth2.init(opts)
+                      .then(() => {
+                        gapi.signin2.render('button1', {
+                          'onsuccess': onSignIn1,
+                          'onfailure': onGoogleInitError1
+                        });
+                      })
+                      .catch(onGoogleInitError1);
+                });
+              }
+
+              function signOut1() {
+                gapi.auth2.getAuthInstance().signOut().then(function () {
+                  document.getElementById('account1').innerText = '';
+                });
+              }
+            </script>
+            <script src="https://apis.google.com/js/platform.js?onload=initGoogleSignIn1"
+                    onerror="onGoogleInitError1('Error loading Google Sign-in button')"></script>
+        </td>
+        <td style="border: 1px solid black">
+            <a href="https://developers.google.com/identity/gsi/web/reference/js-reference">"New" Google Identity JavaScript library</a>
+            <p/>
+            <div id="button2"></div>
+            <div id="account2"></div>
+            <a id="signOut2" href="#" onclick="signOut2(); return false;">Sign out</a>
+            <div id="errorMessage2" style="color: red"></div>
+
+            <script>
+
+              function onSignIn2(credResponse) {
+                let unverifiedResponsePayload = JSON.parse(atob(credResponse.credential.split('.')[1]))
+                document.getElementById('account2').innerText = unverifiedResponsePayload.email
+              }
+
+              function onGoogleInitError2(error) {
+                document.getElementById('errorMessage2').innerText = JSON.stringify(error)
+              }
+
+              function initGoogleSignIn2() {
+                // see https://developers.google.com/identity/gsi/web/reference/js-reference
+                google.accounts.id.initialize({
+                                                client_id: client_id,
+                                                auto_select: true,
+                                                callback: onSignIn2,
+                                              })
+                google.accounts.id.renderButton(document.getElementById('button2'), {
+                  locale: 'en_EN',
+                })
+                // how to pass hosted_domain and how to process errors?
+              }
+
+              function signOut2() {
+                google.accounts.id.revoke(document.getElementById('account2').innerText, result => {
+                  document.getElementById('account2').innerText = ''
+                })
+              }
+            </script>
+
+            <script src="https://accounts.google.com/gsi/client"
+                    onerror="onGoogleInitError2('Error loading Google Sign-in button')" onload="initGoogleSignIn2()"></script>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

@@ -7,7 +7,7 @@
 <body>
 <script>
   var client_id = '308537640474-bcd8o5kdsjkd1ajadskcvi6falj97rkn.apps.googleusercontent.com'
-  var hosted_domain = 'jetbrains.com'
+  // var hosted_domain = 'jetbrains.com'
 </script>
 <table>
     <tr>
@@ -16,13 +16,13 @@
                 web</a>
             <p/>
             <div id="button1"></div>
-            <div id="account1"></div>
+            <div id="account1">not signed in</div>
             <a id="signOut1" href="#" onclick="signOut1(); return false;">Sign out</a>
             <div id="errorMessage1" style="color: red"></div>
 
             <script>
               function onSignIn1(googleUser) {
-                document.getElementById('account1').innerText = googleUser.getBasicProfile().getEmail()
+                document.getElementById('account1').innerText = 'signed in as ' + googleUser.getBasicProfile().getEmail()
               }
 
               function onGoogleInitError1(error) {
@@ -34,7 +34,7 @@
                 gapi.load('auth2', function () {
                   let opts = {
                     client_id: client_id,
-                    hosted_domain: hosted_domain,
+                    // hosted_domain: hosted_domain,
                   }
                   gapi.auth2.init(opts)
                       .then(() => {
@@ -49,7 +49,7 @@
 
               function signOut1() {
                 gapi.auth2.getAuthInstance().signOut().then(function () {
-                  document.getElementById('account1').innerText = '';
+                  document.getElementById('account1').innerText = 'not signed in';
                 });
               }
             </script>
@@ -60,7 +60,7 @@
             <a href="https://developers.google.com/identity/gsi/web/reference/js-reference">"New" Google Identity JavaScript library</a>
             <p/>
             <div id="button2"></div>
-            <div id="account2"></div>
+            <div id="account2">not signed in</div>
             <a id="signOut2" href="#" onclick="signOut2(); return false;">Sign out</a>
             <div id="errorMessage2" style="color: red"></div>
 
@@ -68,7 +68,7 @@
 
               function onSignIn2(credResponse) {
                 let unverifiedResponsePayload = JSON.parse(atob(credResponse.credential.split('.')[1]))
-                document.getElementById('account2').innerText = unverifiedResponsePayload.email
+                document.getElementById('account2').innerText = 'signed in as ' + unverifiedResponsePayload.email
               }
 
               function onGoogleInitError2(error) {
@@ -90,7 +90,7 @@
 
               function signOut2() {
                 google.accounts.id.revoke(document.getElementById('account2').innerText, result => {
-                  document.getElementById('account2').innerText = ''
+                  document.getElementById('account2').innerText = 'not signed in'
                 })
               }
             </script>
